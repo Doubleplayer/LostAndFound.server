@@ -29,6 +29,7 @@ void main() async {
 }
 
 void handleMessage(HttpRequest request, HttpServer server) {
+  print(request.uri);
   if (request.method == 'GET') {
     handleGET(request, server);
   } else if (request.method == 'POST') {
@@ -38,11 +39,24 @@ void handleMessage(HttpRequest request, HttpServer server) {
 
 void handleGET(HttpRequest request, HttpServer server) async {
   var action = request.uri.queryParameters['action'];
-  print(action);
   if (request.uri.toString() == '/') {
     if (action == null) {
       print('123123');
       FileManager(server, request).sendHtml();
+    } else if (action == 'getScores') {
+      var value = {'a': 'b'};
+      request.response
+        ..write(json.encode(value))
+        ..close();
+    }
+  }
+  if (request.uri.toString() == '/lostInfo') {
+    if (action == null) {
+      manager.allLostInfo().then((value) {
+        request.response
+          ..write(json.encode(value))
+          ..close();
+      });
     } else if (action == 'getScores') {
       var value = {'a': 'b'};
       request.response

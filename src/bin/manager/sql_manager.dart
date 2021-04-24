@@ -32,7 +32,13 @@ class Sql {
 
   //插入早起签到信息
   Future<String> getLostInfo() async {
-    var result = await db.query("select * from lost_info;");
-    return result.toString();
+    var tmp = (await db.query("select * from lost_info;")).toList();
+    String res = '';
+    for (int i = 0; i < tmp.length; i++) {
+      res += tmp[i].toString() +
+          '''
+      ''';
+    }
+    return res;
   }
 }

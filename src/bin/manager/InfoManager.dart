@@ -76,4 +76,9 @@ class InfoManager {
       return false;
     }
   }
+
+  Future<String> allLostInfo() async {
+    var res = await sql.getLostInfo();
+    return res;
+  }
 }
