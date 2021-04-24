@@ -23,7 +23,7 @@ class FileManager {
     http_server.VirtualDirectory staticFiles =
         new http_server.VirtualDirectory('.');
     staticFiles.serveFile(
-        new File(myPath + r'/../image/path'), request); //win系统使用该代码
+        new File(myPath + r'/../image/' + path), request); //win系统使用该代码
   }
 
   void sendApk() async {

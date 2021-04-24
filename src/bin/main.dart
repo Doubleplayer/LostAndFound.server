@@ -39,18 +39,10 @@ void handleMessage(HttpRequest request, HttpServer server) {
 
 void handleGET(HttpRequest request, HttpServer server) async {
   var action = request.uri.queryParameters['action'];
-  if (request.uri.toString() == '/') {
-    if (action == null) {
-      print('123123');
-      FileManager(server, request).sendHtml();
-    } else if (action == 'getScores') {
-      var value = {'a': 'b'};
-      request.response
-        ..write(json.encode(value))
-        ..close();
-    }
-  }
-  if (request.uri.toString() == '/lostInfo') {
+  var path = request.requestedUri.path;
+  if (path == '/') {
+    FileManager(server, request).sendHtml();
+  } else if (path == '/lostInfo') {
     if (action == null) {
       manager.allLostInfo().then((value) {
         request.response
@@ -63,6 +55,15 @@ void handleGET(HttpRequest request, HttpServer server) async {
         ..write(json.encode(value))
         ..close();
     }
+  } else if (path == '/developInfo') {
+    FileManager(server, request).sendHtml();
+  } else if (path == '/img') {
+    if (action == null) {
+      request.response
+        ..write(json.encode("确实action字段"))
+        ..close();
+    } else
+      FileManager(server, request).sendImage(action);
   }
 }
 
