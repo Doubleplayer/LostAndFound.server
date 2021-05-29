@@ -21,8 +21,10 @@ class InfoManager {
   String identificationPath;
   Sql sql;
   Map awards;
+  int pre_time;
 
   InfoManager() {
+    pre_time = DateTime.now().millisecondsSinceEpoch;
     sql = Sql();
     this.scorePath = myPath + r'/../data/scores.txt';
     this.awardPath = myPath + r'/../data/awards.txt';
@@ -43,9 +45,12 @@ class InfoManager {
   }
 
   void reconnect_sql() async {
-    await sql.db.close();
-    await sql.connect();
-    print("reconnect to sql");
+    int time_now = DateTime.now().millisecondsSinceEpoch;
+    if (time_now - this.pre_time > 27000000) {
+      await sql.db.close();
+      await sql.connect();
+      print("reconnect to sql");
+    }
   }
 
   Future getIdentification(String username) async {

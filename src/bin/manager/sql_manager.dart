@@ -35,6 +35,7 @@ class Sql {
     var tmp = (await db.query("select * from lost_info;")).toList();
     String res = '';
     for (int i = 0; i < tmp.length; i++) {
+      var map = tmp[i].fields["path"];
       res += tmp[i].toString() +
           '''
       ''';

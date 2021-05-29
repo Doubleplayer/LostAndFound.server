@@ -1,26 +1,15 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:http_server/http_server.dart';
-import 'FileManager.dart';
-import 'manager/InfoManager.dart';
+import './handler/handler.dart' as handler;
 
 String myHost = '172.17.13.219';
-InfoManager manager = new InfoManager();
 void main() async {
   {
     //创建服务器
     var requestServer = await HttpServer.bind(myHost, 9002);
-    var pre_time = DateTime.now().millisecondsSinceEpoch;
-    await manager.init();
     print('http服务启动起来');
-    print(requestServer);
-    await for (HttpRequest request in requestServer) {
+    await for (HttpRequest req in requestServer) {
       try {
-        int time_now = DateTime.now().millisecondsSinceEpoch;
-        if (time_now - pre_time > 27000000) {
-          await manager.reconnect_sql();
-        }
-        handleMessage(request, requestServer);
+        handleRoute(req);
       } catch (e) {
         print(e);
       }
@@ -28,63 +17,16 @@ void main() async {
   }
 }
 
-void handleMessage(HttpRequest request, HttpServer server) {
-  print(request.uri);
-  if (request.method == 'GET') {
-    handleGET(request, server);
-  } else if (request.method == 'POST') {
-    handlePOST(request);
-  }
-}
-
-void handleGET(HttpRequest request, HttpServer server) async {
-  var action = request.uri.queryParameters['action'];
-  var path = request.requestedUri.path;
+void handleRoute(HttpRequest req) async {
+  var path = req.requestedUri.path;
+  req.response.headers.add("Access-Control-Allow-Origin", "*");
   if (path == '/') {
-    FileManager(server, request).sendHtml();
+    handler.HandleRoot(req);
   } else if (path == '/lostInfo') {
-    if (action == null) {
-      manager.allLostInfo().then((value) {
-        request.response
-          ..write(json.encode(value))
-          ..close();
-      });
-    } else if (action == 'getScores') {
-      var value = {'a': 'b'};
-      request.response
-        ..write(json.encode(value))
-        ..close();
-    }
+    handler.HandleLostInfo(req);
   } else if (path == '/developInfo') {
-    FileManager(server, request).sendHtml();
+    handler.HandleDevelopInfo(req);
   } else if (path == '/img') {
-    if (action == null) {
-      request.response
-        ..write(json.encode("确实action字段"))
-        ..close();
-    } else
-      FileManager(server, request).sendImage(action);
-  }
-}
-
-void handlePOST(HttpRequest request) async {
-  var body = await HttpBodyHandler.processRequest(request);
-  var result = body.body;
-  print(result);
-  try {
-    if (result['type'] == 'ORDER') {
-      request.response
-        ..write(jsonEncode('SUCCEED'))
-        ..close();
-    } else {
-      request.response
-        ..statusCode = 404
-        ..write(jsonEncode('FAILED'))
-        ..close();
-    }
-  } catch (e) {
-    request.response
-      ..write(jsonEncode('FAILED'))
-      ..close();
+    handler.HandleImg(req);
   }
 }

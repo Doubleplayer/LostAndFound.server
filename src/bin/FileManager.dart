@@ -5,28 +5,21 @@ import 'package:path/path.dart';
 String myPath = dirname(Platform.script.toFilePath());
 
 class FileManager {
-  var requestServer;
-  HttpRequest request;
-  FileManager(this.requestServer, this.request);
-  void sendHtml() {
+  static void sendHtml(HttpRequest request) {
     http_server.VirtualDirectory staticFiles =
         new http_server.VirtualDirectory('.');
-    //监听请求
-
-//当我们收到请求根目录或者请求/index.html页面时，返回我们的刚刚写好的html页面
-//因为http_server这个包已经为我们处理好了，所以如果html不存在，也不会让服务器奔溃掉，而是返回未找到页面
     staticFiles.serveFile(
         new File(myPath + r'/../webApp/index.html'), request); //win系统使用该代码
   }
 
-  void sendImage(String path) {
+  static void sendImage(HttpRequest request, String path) {
     http_server.VirtualDirectory staticFiles =
         new http_server.VirtualDirectory('.');
     staticFiles.serveFile(
         new File(myPath + r'/../image/' + path), request); //win系统使用该代码
   }
 
-  void sendApk() async {
+  static void sendApk(HttpRequest request) async {
     http_server.VirtualDirectory staticFiles =
         new http_server.VirtualDirectory('.');
 
