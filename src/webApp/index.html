@@ -15,6 +15,36 @@
     <h3>已实现的接口</h3>
     <ul>
         <li><a href="http://landx.top:9002/lostInfo">/lostInfo</a></li>
+        <li><a href="http://landx.top:9002/findInfo">/findInfo</a>
+        <p>
+            <p>GET，获取拾取物品信息</p>
+            <p>
+                request:{
+                }
+            </p>
+            <p>
+                response:{
+                "data":map的列表,
+                "mas":"SUCCESS/系统开小差了"
+                }
+            </p>
+        </p>
+        </li>
+        <li><a href="http://landx.top:9002/login">/login</a>
+            <p>POST，登陆</p>
+            <p>
+                request:{
+                "name":"xiaoxiao",
+                "password":"88888888"
+                }
+            </p>
+            <p>
+                response:{
+                "msg":"msg":"SUCCESS/FAILD/WRONG PASSWORD/NO SUCH USER",
+                "token":"一个25位的字符串"
+                }
+            </p>
+        </li>
         <li><a href="http://landx.top:9002/img?action=2021-02-03_Sign_in.jpg">/img?action=?</a></li>
         
     </ul>
