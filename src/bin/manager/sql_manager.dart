@@ -200,51 +200,54 @@ class Sql {
         filterStr2 = <String>[],
         filterParms = <Object>[];
     if (lostInfo.name != null && lostInfo.name.isNotEmpty) {
-      filterParms.add('name');
+      filterStr.add('name');
       filterStr2.add('?');
       filterParms.add(lostInfo.name);
     }
     if (lostInfo.discrip != null && lostInfo.discrip.isNotEmpty) {
-      filterParms.add('discrip');
+      filterStr.add('discrip');
       filterStr2.add('?');
       filterParms.add(lostInfo.discrip);
     }
     if (lostInfo.category != null && lostInfo.category.isNotEmpty) {
-      filterParms.add('discrip');
+      filterStr.add('category');
       filterStr2.add('?');
-      filterParms.add(lostInfo.discrip);
+      filterParms.add(lostInfo.category);
     }
     if (lostInfo.path != null && lostInfo.path.isNotEmpty) {
       var tmp = <String>[];
       for (var item in lostInfo.path) {
-        tmp.add(item.toString());
+        for (var p in item) {
+          tmp.add(p.toString());
+        }
+        tmp.add(item.join(','));
       }
-      filterParms.add('path');
+      filterStr.add('path');
       filterStr2.add('?');
       filterParms.add(tmp.join(','));
     }
     if (lostInfo.time != null && lostInfo.time.isNotEmpty) {
-      filterParms.add('time');
+      filterStr.add('time');
       filterStr2.add('?');
-      filterParms.add(lostInfo.name);
+      filterParms.add(lostInfo.time);
     }
     {
-      filterParms.add('if_find');
+      filterStr.add('if_find');
       filterStr2.add('?');
       filterParms.add(0);
     }
     if (lostInfo.userName != null && lostInfo.userName.isNotEmpty) {
-      filterParms.add('user_name');
+      filterStr.add('user_name');
       filterStr2.add('?');
       filterParms.add(lostInfo.userName);
     }
     if (lostInfo.contactInfo != null && lostInfo.contactInfo.isNotEmpty) {
-      filterParms.add('contact_info');
+      filterStr.add('contact_info');
       filterStr2.add('?');
       filterParms.add(lostInfo.contactInfo);
     }
     if (lostInfo.picture != null && lostInfo.picture.isNotEmpty) {
-      filterParms.add('picture');
+      filterStr.add('picture');
       filterStr2.add('?');
       filterParms.add(lostInfo.picture);
     }

@@ -223,6 +223,9 @@ void HandleUploadLostInfo(HttpRequest req) async {
       res['data'] = '入库不成功';
       res['msg'] = 'FAILED';
     }
+    req.response
+      ..write(jsonEncode(res))
+      ..close();
   } catch (e) {
     req.response
       ..write(jsonEncode({'msg': e.toString(), 'data': []}))

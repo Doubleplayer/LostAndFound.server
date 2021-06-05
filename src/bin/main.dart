@@ -46,7 +46,7 @@ void handleRoute(HttpRequest req) async {
     handler.HandleDevelopInfo(req);
   } else if (path == '/img') {
     handler.HandleImg(req);
-  } else if (path == '/uploadInfo') {
+  } else if (path == '/uploadLostInfo') {
     handler.HandleUploadLostInfo(req);
   } else if (path == '/login') {
     handler.HandleLogin(req);
