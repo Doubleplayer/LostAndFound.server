@@ -42,6 +42,15 @@ void HandleLostInfo(HttpRequest req) async {
   }
 }
 
+void HandleStatic(HttpRequest req) {
+  var path = req.uri.path;
+  FileManager.sendFile(req, '/webApp/dist' + path);
+}
+
+void ServerWebApp(HttpRequest req) {
+  FileManager.sendFile(req, '/webApp/dist/index.html');
+}
+
 //返回开发信息页面
 void HandleDevelopInfo(HttpRequest req) {
   FileManager.sendHtml(req);

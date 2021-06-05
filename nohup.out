@@ -3,3 +3,10 @@ http服务启动起来
 Error when reading 'bin/main.dart': No such file or directory.
 Error when reading 'bin/main.dart': No such file or directory.
 http服务启动起来
+http服务启动起来
+Unhandled exception:
+SocketException: Failed to create server socket (OS Error: Address already in use, errno = 98), address = 0.0.0.0, port = 9002
+#0      _NativeSocket.bind (dart:io-patch/socket_patch.dart:957:7)
+<asynchronous suspension>
+#1      main (file:///root/server/LostAndFound.server/src/bin/main.dart:9:25)
+<asynchronous suspension>

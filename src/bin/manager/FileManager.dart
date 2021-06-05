@@ -27,6 +27,13 @@ class FileManager {
         new File(myPath + r'/../apk/APP.apk'), request); //win系统使用该代码
   }
 
+  static void sendFile(HttpRequest request, String pathFromSrc) async {
+    http_server.VirtualDirectory staticFiles =
+        new http_server.VirtualDirectory('.');
+    String filepath = myPath + r'/..' + pathFromSrc;
+    staticFiles.serveFile(new File(filepath), request); //win系统使用该代码
+  }
+
   static String save_image(String filename, var content) {
     try {
       var imagePath = myPath + r'/../image/' + filename;

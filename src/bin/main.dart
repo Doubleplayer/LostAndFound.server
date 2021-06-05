@@ -56,5 +56,11 @@ void handleRoute(HttpRequest req) async {
     handler.HandleFindInfo(req);
   } else if (path == '/searchInfo') {
     handler.HandleSearchFindInfo(req);
+  } else if (path.contains('static')) {
+    handler.HandleStatic(req);
+  } else if (path == '/lost_and_found') {
+    handler.ServerWebApp(req);
+  } else if (path == '/favicon.ico') {
+    handler.ServerWebApp(req);
   }
 }
