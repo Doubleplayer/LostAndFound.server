@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import './handler/handler.dart' as handler;
 
-String myHost = '172.17.13.219';
-String localHost = '127.0.0.1';
 void main() async {
   {
     //创建服务器
     // var requestHttpsServer= await HttpServer.bindSecure(myHost, 9002, context)
-    var requestServer = await HttpServer.bind(myHost, 9002);
+    var requestServer = await HttpServer.bind('0.0.0.0', 9002);
     print('http服务启动起来');
     await for (HttpRequest req in requestServer) {
       try {

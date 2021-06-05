@@ -10,8 +10,12 @@ class Sql {
   ConnectionSettings settings;
   Sql({this.settings}) {
     if (this.settings == null) {
+      var host = 'landx.top';
+      if (config.env == config.LOCAL) {
+        host = 'localhost';
+      }
       this.settings = ConnectionSettings(
-        host: 'localhost',
+        host: host,
         port: 3306,
         user: 'lsh',
         db: 'lost_and_found',
