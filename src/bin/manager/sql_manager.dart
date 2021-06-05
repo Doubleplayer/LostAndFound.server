@@ -31,13 +31,18 @@ class Sql {
     }
     var transList = <FindInfoModel>[];
     for (var i = 0; i < findInfoList.length; i++) {
-      var strPath = (findInfoList[i]['path'].toString());
+      var strPath = (findInfoList[i]['path'] as Blob).toString();
       var listStrPath = strPath.split(','); //坐标的字符串列表
-      var place = {
-        'latitude': double.parse(listStrPath[0]),
-        'lontitude': double.parse(listStrPath[1])
-      };
-      findInfoList[i]['place'] = place;
+      var listDoublePath = <List<double>>[];
+      var point = <double>[];
+      for (var i = 0; i < listStrPath.length; i++) {
+        point.add(double.parse(listStrPath[i]));
+        if (i % 2 == 1) {
+          listDoublePath.add(point.toList());
+          point.clear();
+        }
+      }
+      findInfoList[i]['path'] = listDoublePath;
       findInfoList[i]['time'] = formatDate(findInfoList[i]['time'] as DateTime,
           [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
       transList.add(FindInfoModel.fromJson(findInfoList[i]));
@@ -177,8 +182,8 @@ class Sql {
     for (var i = 0; i < res.length; i++) {
       var old = lostInfo.path[0];
       for (var item in lostInfo.path) {
-        var flag = nearByLine(
-            [res[i].place.latitude, res[i].place.lontitude], old, item);
+        var flag =
+            nearByLine([res[i].path[0][0], res[i].path[0][1]], old, item);
         print(flag);
         if (flag) {
           filterRes.add(res[i]);

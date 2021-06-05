@@ -26,4 +26,16 @@ class FileManager {
     staticFiles.serveFile(
         new File(myPath + r'/../apk/APP.apk'), request); //win系统使用该代码
   }
+
+  static String save_image(String filename, var content) {
+    try {
+      var imagePath = myPath + r'/../image/' + filename;
+      print(imagePath);
+      var image = File(imagePath);
+      image.writeAsBytesSync(content);
+      return imagePath;
+    } catch (e) {
+      return 'FAILED';
+    }
+  }
 }

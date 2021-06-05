@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:date_format/date_format.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:src/models/find_info_model/find_info_model.dart';
-import '../FileManager.dart';
+import '../manager/FileManager.dart';
 import '../manager/account_manager.dart';
 import '../manager/sql_manager.dart';
 import 'package:src/models/lost_info_model/lost_info_model.dart';
@@ -193,17 +193,27 @@ void HandleUploadLostInfo(HttpRequest req) async {
     var sql = await Sql.NewSql();
     var res = {'data': [], 'msg': ''};
     var body = (await HttpBodyHandler.processRequest(req)).body;
-    LostInfoModel model = LostInfoModel.fromJson(body);
-    var findInfos = await sql.fliterFindInfo(model);
-    var ret = <Map<String, dynamic>>[];
-    for (var item in findInfos) {
-      ret.add(item.toJson());
+    if (body['picture'] != null) {
+      HttpBodyFileUpload fileUploaded = body['picture'];
+      var imgPath = await FileManager.save_image(
+          fileUploaded.filename, fileUploaded.content);
+      if (imgPath == 'FAILED') {
+        req.response
+          ..write(jsonEncode({'msg': '上传图片出错', 'data': []}))
+          ..close();
+      }
+      body['picture'] = imgPath;
     }
-    res['data'] = ret;
-    res['msg'] = 'SUCCESS';
-    req.response
-      ..write(jsonEncode(res))
-      ..close();
+
+    var model = LostInfoModel.fromJson(body);
+    var flag = await sql.uploadLostInfo(model);
+    if (flag) {
+      res['data'] = '上传成功';
+      res['msg'] = 'SUCCESS';
+    } else {
+      res['data'] = '入库不成功';
+      res['msg'] = 'FAILED';
+    }
   } catch (e) {
     req.response
       ..write(jsonEncode({'msg': e.toString(), 'data': []}))
