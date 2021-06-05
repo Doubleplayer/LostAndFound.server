@@ -31,7 +31,7 @@ class Sql {
     }
     var transList = <FindInfoModel>[];
     for (var i = 0; i < findInfoList.length; i++) {
-      var strPath = (findInfoList[i]['place'] as String);
+      var strPath = (findInfoList[i]['path'].toString());
       var listStrPath = strPath.split(','); //坐标的字符串列表
       var place = {
         'latitude': double.parse(listStrPath[0]),
