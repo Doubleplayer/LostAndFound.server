@@ -138,16 +138,7 @@ void HandleFindInfo(HttpRequest req) async {
     var findInfoList = await sql.getFindInfo();
     var transList = <Map<String, dynamic>>[];
     for (var i = 0; i < findInfoList.length; i++) {
-      var strPath = (findInfoList[i]['place'] as String);
-      var listStrPath = strPath.split(','); //坐标的字符串列表
-      var place = {
-        'latitude': double.parse(listStrPath[0]),
-        'lontitude': double.parse(listStrPath[1])
-      };
-      findInfoList[i]['place'] = place;
-      findInfoList[i]['time'] = formatDate(findInfoList[i]['time'] as DateTime,
-          [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
-      transList.add(FindInfoModel.fromJson(findInfoList[i]).toJson());
+      transList.add(findInfoList[i].toJson());
     }
     req.response
       ..write(jsonEncode({'data': transList, 'msg': 'success'}))
@@ -183,17 +174,24 @@ void handlePOST(HttpRequest req) async {
 
 //搜索推荐信息
 void HandleSearchFindInfo(HttpRequest req) async {
-  var sql = await Sql.NewSql();
-  var res = {'data': [], 'msg': ''};
-  var body = (await HttpBodyHandler.processRequest(req)).body;
-  LostInfoModel model = LostInfoModel.fromJson(body);
-  var findInfos = await sql.fliterFindInfo(model);
-  var ret = <Map<String, dynamic>>[];
-  for (var item in findInfos) {
-    ret.add(item.toJson());
+  try {
+    var sql = await Sql.NewSql();
+    var res = {'data': [], 'msg': ''};
+    var body = (await HttpBodyHandler.processRequest(req)).body;
+    LostInfoModel model = LostInfoModel.fromJson(body);
+    var findInfos = await sql.fliterFindInfo(model);
+    var ret = <Map<String, dynamic>>[];
+    for (var item in findInfos) {
+      ret.add(item.toJson());
+    }
+    res['data'] = ret;
+    res['msg'] = 'SUCCESS';
+    req.response
+      ..write(jsonEncode(res))
+      ..close();
+  } catch (e) {
+    req.response
+      ..write(jsonEncode({'msg': e.toString(), 'data': []}))
+      ..close();
   }
-  res['data'] = ret;
-  req.response
-    ..write(jsonEncode(res))
-    ..close();
 }

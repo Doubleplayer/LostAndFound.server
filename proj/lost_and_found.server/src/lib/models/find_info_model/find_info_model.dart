@@ -5,7 +5,7 @@ class FindInfoModel {
   String name;
   String discrip;
   String category;
-  Place place;
+  List<List<double>> path;
   String time;
   String userName;
   String contactInfo;
@@ -16,7 +16,7 @@ class FindInfoModel {
     this.name,
     this.discrip,
     this.category,
-    this.place,
+    this.path,
     this.time,
     this.userName,
     this.contactInfo,
@@ -24,14 +24,22 @@ class FindInfoModel {
   });
 
   factory FindInfoModel.fromJson(Map<String, dynamic> json) {
+    var list = <List<double>>[];
+    var tmp = json['path'] as List;
+    if (tmp == null || tmp.isEmpty) {
+      list = null;
+    } else {
+      var a = <double>[];
+      a.add(tmp[0][0]);
+      a.add(tmp[0][1]);
+      list.add(a);
+    }
     return FindInfoModel(
       id: json['id'] as int,
       name: json['name'] as String,
       discrip: json['discrip'] as String,
       category: json['category'] as String,
-      place: json['place'] == null
-          ? null
-          : Place.fromJson(json['place'] as Map<String, dynamic>),
+      path: list,
       time: json['time'] as String,
       userName: json['user_name'] as String,
       contactInfo: json['contact_info'] as String,
@@ -45,7 +53,7 @@ class FindInfoModel {
       'name': name,
       'discrip': discrip,
       'category': category,
-      'place': place?.toJson(),
+      'place': path,
       'time': time,
       'user_name': userName,
       'contact_info': contactInfo,
