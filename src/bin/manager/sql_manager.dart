@@ -81,12 +81,9 @@ class Sql {
     return res;
   }
 
-  Future<List<Map<String, dynamic>>> getFindInfo() async {
+  Future<List<FindInfoModel>> getFindInfo() async {
     var tmp = (await db.query('select * from find_info;')).toList();
-    var res = <Map<String, dynamic>>[];
-    for (int i = 0; i < tmp.length; i++) {
-      res.add(tmp[i].fields);
-    }
+    var res = await transToFindInfo(tmp);
     return res;
   }
 
@@ -190,5 +187,70 @@ class Sql {
     }
 
     return filterRes;
+  }
+
+  Future<bool> uploadLostInfo(LostInfoModel lostInfo) async {
+    var queryStr = 'insert into lost_info ',
+        filterStr = <String>[],
+        filterStr2 = <String>[],
+        filterParms = <Object>[];
+    if (lostInfo.name != null && lostInfo.name.isNotEmpty) {
+      filterParms.add('name');
+      filterStr2.add('?');
+      filterParms.add(lostInfo.name);
+    }
+    if (lostInfo.discrip != null && lostInfo.discrip.isNotEmpty) {
+      filterParms.add('discrip');
+      filterStr2.add('?');
+      filterParms.add(lostInfo.discrip);
+    }
+    if (lostInfo.category != null && lostInfo.category.isNotEmpty) {
+      filterParms.add('discrip');
+      filterStr2.add('?');
+      filterParms.add(lostInfo.discrip);
+    }
+    if (lostInfo.path != null && lostInfo.path.isNotEmpty) {
+      var tmp = <String>[];
+      for (var item in lostInfo.path) {
+        tmp.add(item.toString());
+      }
+      filterParms.add('path');
+      filterStr2.add('?');
+      filterParms.add(tmp.join(','));
+    }
+    if (lostInfo.time != null && lostInfo.time.isNotEmpty) {
+      filterParms.add('time');
+      filterStr2.add('?');
+      filterParms.add(lostInfo.name);
+    }
+    {
+      filterParms.add('if_find');
+      filterStr2.add('?');
+      filterParms.add(0);
+    }
+    if (lostInfo.userName != null && lostInfo.userName.isNotEmpty) {
+      filterParms.add('user_name');
+      filterStr2.add('?');
+      filterParms.add(lostInfo.userName);
+    }
+    if (lostInfo.contactInfo != null && lostInfo.contactInfo.isNotEmpty) {
+      filterParms.add('contact_info');
+      filterStr2.add('?');
+      filterParms.add(lostInfo.contactInfo);
+    }
+    if (lostInfo.picture != null && lostInfo.picture.isNotEmpty) {
+      filterParms.add('picture');
+      filterStr2.add('?');
+      filterParms.add(lostInfo.picture);
+    }
+    queryStr = queryStr +
+        '(' +
+        filterStr.join(',') +
+        ') values (' +
+        filterStr2.join(',') +
+        ');';
+    var res = await db.query(queryStr, filterParms);
+    if (res.affectedRows == 0) return false;
+    return true;
   }
 }
