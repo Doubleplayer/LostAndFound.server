@@ -24,12 +24,24 @@ class LostInfoModel {
   });
 
   factory LostInfoModel.fromJson(Map<String, dynamic> json) {
+    var list = <List<double>>[];
+    var tmp = json['path'] as List;
+    if (tmp == null) {
+      list = null;
+    } else {
+      for (var i = 0; i < tmp.length; i++) {
+        var a = <double>[];
+        a.add(tmp[i][0]);
+        a.add(tmp[i][1]);
+        list.add(a);
+      }
+    }
     return LostInfoModel(
       id: json['id'] as int,
       name: json['name'] as String,
       discrip: json['discrip'] as String,
       category: json['category'] as String,
-      path: json['path'] as List<List<double>>,
+      path: list,
       time: json['time'] as String,
       ifFind: json['if_find'] as int,
       userName: json['user_name'] as String,

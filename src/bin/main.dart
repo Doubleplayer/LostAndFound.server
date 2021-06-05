@@ -15,7 +15,7 @@ void main() async {
         handleRoute(req);
       } catch (e) {
         req.response
-          ..write(jsonEncode({"msg": '系统开小差了'}))
+          ..write(jsonEncode({'msg': '系统开小差了'}))
           ..close();
         print(e);
       }
@@ -26,17 +26,17 @@ void main() async {
 void handleRoute(HttpRequest req) async {
   //跨域配置
   var path = req.requestedUri.path;
-  req.response.headers.add("Access-Control-Allow-Origin", "*");
-  req.response.headers.add("Access-Control-Allow-Credentials", "true");
-  req.response.headers.add("Access-Control-Allow-Methods", "*");
+  req.response.headers.add('Access-Control-Allow-Origin', '*');
+  req.response.headers.add('Access-Control-Allow-Credentials', 'true');
+  req.response.headers.add('Access-Control-Allow-Methods', '*');
   req.response.headers
-      .add("Access-Control-Allow-Headers", "Content-Type,Access-Token");
-  req.response.headers.add("Access-Control-Expose-Headers", "*");
+      .add('Access-Control-Allow-Headers', 'Content-Type,Access-Token');
+  req.response.headers.add('Access-Control-Expose-Headers', '*');
 
   if (req.method == 'OPTIONS') {
     req.response
       ..statusCode = 200
-      ..write("")
+      ..write('')
       ..close();
     return;
   }
@@ -52,9 +52,11 @@ void handleRoute(HttpRequest req) async {
     handler.HandleUploadLostInfo(req);
   } else if (path == '/login') {
     handler.HandleLogin(req);
-  } else if (path == '/sendVerify') {
-    handler.HandleSendVerify(req);
+  } else if (path == '/registe') {
+    handler.HandleRegiste(req);
   } else if (path == '/findInfo') {
     handler.HandleFindInfo(req);
+  } else if (path == '/searchInfo') {
+    handler.HandleSearchFindInfo(req);
   }
 }

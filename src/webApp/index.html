@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>LostAndFound</title>
     <style>
-        .title{
+        .title {
             text-align: center;
         }
     </style>
 </head>
+
 <body>
     <h1 style="text-align: center;color: aquamarine;">PKU失物招领墙（LostAndFound） </h1>
     <p style="text-align: center;">项目主页：<a href="https://github.com/Doubleplayer/LostAndFound.server">github</a></p>
@@ -16,7 +18,7 @@
     <ul>
         <li><a href="http://landx.top:9002/lostInfo">/lostInfo</a></li>
         <li><a href="http://landx.top:9002/findInfo">/findInfo</a>
-        <p>
+            <p>
             <p>GET，获取拾取物品信息</p>
             <p>
                 request:{
@@ -28,7 +30,7 @@
                 "mas":"SUCCESS/系统开小差了"
                 }
             </p>
-        </p>
+            </p>
         </li>
         <li><a href="http://landx.top:9002/login">/login</a>
             <p>POST，登陆</p>
@@ -46,8 +48,21 @@
             </p>
         </li>
         <li><a href="http://landx.top:9002/img?action=2021-02-03_Sign_in.jpg">/img?action=?</a></li>
-        
+
+        <li><a href="http://landx.top:9002/searchInfo">/searchInfo</a>
+            <p>POST，搜索信息</p>
+            <p>{
+                "category":"数码",
+                "name":"小米",
+                "path":[[116.316644,40.000972],[116.315337,39.996705],[116.320349,39.997973]],
+                "time":"2021-01-19 13:14:07"
+                }</p>
+        </li>
+       
+
+
     </ul>
-    
+
 </body>
+
 </html>

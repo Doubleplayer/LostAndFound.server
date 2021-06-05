@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:date_format/date_format.dart';
 import 'package:mysql1/mysql1.dart';
 import 'package:src/models/find_info_model/find_info_model.dart';
 import '../FileManager.dart';
@@ -11,8 +12,7 @@ import 'package:http_server/http_server.dart';
 //返回丢失物品信息
 void HandleLostInfo(HttpRequest req) async {
   try {
-    var sql = Sql();
-    await sql.connect();
+    var sql = await Sql.NewSql();
     var lostInfoList = await sql.getLostInfo();
     var transList = <Map<String, dynamic>>[];
     for (var i = 0; i < lostInfoList.length; i++) {
@@ -28,6 +28,8 @@ void HandleLostInfo(HttpRequest req) async {
         }
       }
       lostInfoList[i]['path'] = listDoublePath;
+      lostInfoList[i]['time'] = formatDate(lostInfoList[i]['time'] as DateTime,
+          [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
       transList.add(LostInfoModel.fromJson(lostInfoList[i]).toJson());
     }
     req.response
@@ -74,8 +76,7 @@ void HandleRoot(HttpRequest req) {
 //登陆
 void HandleLogin(HttpRequest req) async {
   try {
-    var sql = Sql();
-    sql.connect();
+    var sql = await Sql.NewSql();
     var res = {'msg': '', 'token': ''};
     var body = (await HttpBodyHandler.processRequest(req)).body;
     var checkStatus =
@@ -96,7 +97,6 @@ void HandleLogin(HttpRequest req) async {
     req.response
       ..write(jsonEncode(res))
       ..close();
-    sql.disconnect();
   } catch (e) {
     req.response
       ..write(jsonEncode({'ms': '系统开小差了'}))
@@ -134,8 +134,7 @@ Future CheckLoginStatus(HttpRequest req) async {
 
 void HandleFindInfo(HttpRequest req) async {
   try {
-    var sql = Sql();
-    await sql.connect();
+    var sql = await Sql.NewSql();
     var findInfoList = await sql.getFindInfo();
     var transList = <Map<String, dynamic>>[];
     for (var i = 0; i < findInfoList.length; i++) {
@@ -146,6 +145,8 @@ void HandleFindInfo(HttpRequest req) async {
         'lontitude': double.parse(listStrPath[1])
       };
       findInfoList[i]['place'] = place;
+      findInfoList[i]['time'] = formatDate(findInfoList[i]['time'] as DateTime,
+          [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
       transList.add(FindInfoModel.fromJson(findInfoList[i]).toJson());
     }
     req.response
@@ -176,6 +177,30 @@ void handlePOST(HttpRequest req) async {
   } catch (e) {
     req.response
       ..write(jsonEncode('FAILED'))
+      ..close();
+  }
+}
+
+//搜索推荐信息
+void HandleSearchFindInfo(HttpRequest req) async {
+  try {
+    var sql = await Sql.NewSql();
+    var res = {'data': [], 'msg': ''};
+    var body = (await HttpBodyHandler.processRequest(req)).body;
+    LostInfoModel model = LostInfoModel.fromJson(body);
+    var findInfos = await sql.fliterFindInfo(model);
+    var ret = <Map<String, dynamic>>[];
+    for (var item in findInfos) {
+      ret.add(item.toJson());
+    }
+    res['data'] = ret;
+    res['msg'] = 'SUCCESS';
+    req.response
+      ..write(jsonEncode(res))
+      ..close();
+  } catch (e) {
+    req.response
+      ..write(jsonEncode({'msg': e.toString(), 'data': []}))
       ..close();
   }
 }

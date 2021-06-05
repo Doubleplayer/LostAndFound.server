@@ -45,3 +45,47 @@ Available commands:
 Run "dart help <command>" for more information about a command.
 See https://dart.dev/tools/dart-tool for detailed documentation.
 http服务启动起来
+http服务启动起来
+Unhandled exception:
+SocketException: Failed to create server socket (OS Error: Address already in use, errno = 98), address = 172.17.13.219, port = 9002
+#0      _NativeSocket.bind (dart:io-patch/socket_patch.dart:774:7)
+<asynchronous suspension>
+#1      _RawServerSocket.bind (dart:io-patch/socket_patch.dart:1458:26)
+#2      _ServerSocket.bind (dart:io-patch/socket_patch.dart:1729:29)
+#3      ServerSocket._bind (dart:io-patch/socket_patch.dart:1720:26)
+#4      ServerSocket.bind (dart:io/socket.dart:386:27)
+#5      _HttpServer.bind (dart:_http/http_impl.dart:2838:25)
+#6      HttpServer.bind (dart:_http:228:19)
+#7      main (file:///root/server/LostAndFound.server/src/bin/main.dart:11:42)
+#8      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:301:19)
+#9      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:168:12)
+Unhandled exception:
+SocketException: Failed to create server socket (OS Error: Address already in use, errno = 98), address = 172.17.13.219, port = 9002
+#0      _NativeSocket.bind (dart:io-patch/socket_patch.dart:774:7)
+<asynchronous suspension>
+#1      _RawServerSocket.bind (dart:io-patch/socket_patch.dart:1458:26)
+#2      _ServerSocket.bind (dart:io-patch/socket_patch.dart:1729:29)
+#3      ServerSocket._bind (dart:io-patch/socket_patch.dart:1720:26)
+#4      ServerSocket.bind (dart:io/socket.dart:386:27)
+#5      _HttpServer.bind (dart:_http/http_impl.dart:2838:25)
+#6      HttpServer.bind (dart:_http:228:19)
+#7      main (file:///root/server/LostAndFound.server/src/bin/main.dart:11:42)
+#8      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:301:19)
+#9      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:168:12)
+Unhandled exception:
+SocketException: Failed to create server socket (OS Error: Address already in use, errno = 98), address = 172.17.13.219, port = 9002
+#0      _NativeSocket.bind (dart:io-patch/socket_patch.dart:774:7)
+<asynchronous suspension>
+#1      _RawServerSocket.bind (dart:io-patch/socket_patch.dart:1458:26)
+#2      _ServerSocket.bind (dart:io-patch/socket_patch.dart:1729:29)
+#3      ServerSocket._bind (dart:io-patch/socket_patch.dart:1720:26)
+#4      ServerSocket.bind (dart:io/socket.dart:386:27)
+#5      _HttpServer.bind (dart:_http/http_impl.dart:2838:25)
+#6      HttpServer.bind (dart:_http:228:19)
+#7      main (file:///root/server/LostAndFound.server/src/bin/main.dart:11:42)
+#8      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:301:19)
+#9      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:168:12)
+http服务启动起来
+http服务启动起来
+http服务启动起来
+http服务启动起来
