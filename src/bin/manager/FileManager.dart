@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:http_server/http_server.dart' as http_server;
 import 'package:path/path.dart';
+import 'sql_manager.dart';
+import 'account_manager.dart';
+import '../config/config.dart' as config;
 
 String myPath = dirname(Platform.script.toFilePath());
 
@@ -34,13 +37,28 @@ class FileManager {
     staticFiles.serveFile(new File(filepath), request); //win系统使用该代码
   }
 
-  static String save_image(String filename, var content) {
+  static Future<String> save_image(String filename, var content) async {
     try {
-      var imagePath = myPath + r'/../image/' + filename;
+      var sql = await Sql.NewSql();
+      var name = await sql.getCount();
+      name = name +
+          AccountManager.createRandomVerifyNum(20 - name.length) +
+          filename.substring(filename.lastIndexOf('.'), filename.length);
+      var imagePath = myPath + r'/../image/' + name;
       print(imagePath);
       var image = File(imagePath);
       image.writeAsBytesSync(content);
-      return imagePath;
+      if (config.env == config.REMOTE) {
+        return 'http://127.0.0.1:' +
+            config.PORT.toString() +
+            '/img?action=' +
+            name;
+      } else if (config.env == config.LOCAL) {
+        return 'http://landx.top:' +
+            config.PORT.toString() +
+            '/img?action=' +
+            name;
+      }
     } catch (e) {
       return 'FAILED';
     }

@@ -24,12 +24,12 @@ class Sql {
     }
   }
 
-  List<FindInfoModel> transToFindInfo(List<Row> tmp) {
+  List<LostInfoModel> transToLostInfo(List<Row> tmp) {
     var findInfoList = <Map<String, dynamic>>[];
     for (int i = 0; i < tmp.length; i++) {
       findInfoList.add(tmp[i].fields);
     }
-    var transList = <FindInfoModel>[];
+    var transList = <LostInfoModel>[];
     for (var i = 0; i < findInfoList.length; i++) {
       var strPath = (findInfoList[i]['path'] as Blob).toString();
       var listStrPath = strPath.split(','); //坐标的字符串列表
@@ -45,7 +45,7 @@ class Sql {
       findInfoList[i]['path'] = listDoublePath;
       findInfoList[i]['time'] = formatDate(findInfoList[i]['time'] as DateTime,
           [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
-      transList.add(FindInfoModel.fromJson(findInfoList[i]));
+      transList.add(LostInfoModel.fromJson(findInfoList[i]));
     }
     return transList;
   }
@@ -76,20 +76,10 @@ class Sql {
     }
   }
 
-  //获取LostInfo
-  Future<List<Map<String, dynamic>>> getLostInfo() async {
-    var tmp = (await db.query('select * from lost_info;')).toList();
-    var res = <Map<String, dynamic>>[];
-    for (int i = 0; i < tmp.length; i++) {
-      res.add(tmp[i].fields);
-    }
-    return res;
-  }
-
-  Future<List<FindInfoModel>> getFindInfo() async {
-    var tmp = (await db.query('select * from find_info;')).toList();
-    var res = await transToFindInfo(tmp);
-    return res;
+  Future<String> getCount() async {
+    var result = await db.query('select count(*) from lost_info;');
+    var tmp = result.toList()[0];
+    return tmp[0].toString();
   }
 
   Future<bool> setToken(String token, String name) async {
@@ -148,9 +138,14 @@ class Sql {
   }
 
   //通过LostInfo筛选FindInfo
-  Future<List<FindInfoModel>> fliterFindInfo(LostInfoModel lostInfo) async {
+  Future<List<LostInfoModel>> fliterLostInfo(LostInfoModel lostInfo) async {
     var filterStr = <String>[];
     var filterParms = <Object>[];
+
+    if (lostInfo.id != null) {
+      filterStr.add('id = ?');
+      filterParms.add(lostInfo.id);
+    }
 
     if (lostInfo.category != null && lostInfo.category != '') {
       filterStr.add('category = ?');
@@ -159,6 +154,21 @@ class Sql {
     if (lostInfo.time != null && lostInfo.time != '') {
       filterStr.add('time >= ?');
       filterParms.add(lostInfo.time);
+    }
+
+    if (lostInfo.ifFind != null) {
+      filterStr.add('if_find = ?');
+      filterParms.add(lostInfo.ifFind);
+    }
+
+    if (lostInfo.userName != null && lostInfo.userName.isNotEmpty) {
+      filterStr.add('user_name = ?');
+      filterParms.add(lostInfo.userName);
+    }
+
+    if (lostInfo.type != null) {
+      filterStr.add('type = ?');
+      filterParms.add(lostInfo.type);
     }
     if (lostInfo.name != null && lostInfo.name != '') {
       var name = lostInfo.name;
@@ -171,14 +181,14 @@ class Sql {
     }
     filterStr.add('1=1');
     var quaryStr =
-        'select * from find_info where ' + filterStr.join(' and ') + ';';
-    var res = <FindInfoModel>[];
+        'select * from lost_info where ' + filterStr.join(' and ') + ';';
+    var res = <LostInfoModel>[];
     var tmp = (await db.query(quaryStr, filterParms)).toList();
-    res = transToFindInfo(tmp);
+    res = transToLostInfo(tmp);
     if (lostInfo.path == null || lostInfo.path.isEmpty) {
       return res;
     }
-    var filterRes = <FindInfoModel>[];
+    var filterRes = <LostInfoModel>[];
     for (var i = 0; i < res.length; i++) {
       var old = lostInfo.path[0];
       for (var item in lostInfo.path) {
@@ -194,7 +204,7 @@ class Sql {
     return filterRes;
   }
 
-  Future<bool> uploadLostInfo(LostInfoModel lostInfo) async {
+  Future<bool> uploadInfo(LostInfoModel lostInfo) async {
     var queryStr = 'insert into lost_info ',
         filterStr = <String>[],
         filterStr2 = <String>[],
@@ -250,6 +260,12 @@ class Sql {
       filterStr.add('picture');
       filterStr2.add('?');
       filterParms.add(lostInfo.picture);
+    }
+    if (lostInfo.type != null) {
+      if (lostInfo.type < 0 || lostInfo.type > 1) return false;
+      filterStr.add('type');
+      filterStr2.add('?');
+      filterParms.add(lostInfo.type);
     }
     queryStr = queryStr +
         '(' +

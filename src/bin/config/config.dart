@@ -4,3 +4,4 @@ var minDiv = 0.00018;
 const LOCAL = 'local';
 const REMOTE = 'remote';
 var env = REMOTE;
+var PORT = 9002;

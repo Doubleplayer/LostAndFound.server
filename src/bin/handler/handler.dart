@@ -13,27 +13,33 @@ import 'package:http_server/http_server.dart';
 void HandleLostInfo(HttpRequest req) async {
   try {
     var sql = await Sql.NewSql();
-    var lostInfoList = await sql.getLostInfo();
+    var searchInfo = LostInfoModel(type: 0);
+    var lostInfoList = await sql.fliterLostInfo(searchInfo);
     var transList = <Map<String, dynamic>>[];
     for (var i = 0; i < lostInfoList.length; i++) {
-      var strPath = (lostInfoList[i]['path'] as Blob).toString();
-      var listStrPath = strPath.split(','); //坐标的字符串列表
-      var listDoublePath = <List<double>>[];
-      var point = <double>[];
-      for (var i = 0; i < listStrPath.length; i++) {
-        point.add(double.parse(listStrPath[i]));
-        if (i % 2 == 1) {
-          listDoublePath.add(point.toList());
-          point.clear();
-        }
-      }
-      lostInfoList[i]['path'] = listDoublePath;
-      lostInfoList[i]['time'] = formatDate(lostInfoList[i]['time'] as DateTime,
-          [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
-      transList.add(LostInfoModel.fromJson(lostInfoList[i]).toJson());
+      transList.add(lostInfoList[i].toJson());
     }
     req.response
       ..write(jsonEncode({'points': transList, 'msg': 'SUCCESS'}))
+      ..close();
+  } catch (e) {
+    req.response
+      ..write(jsonEncode({'msg': '系统开小差了'}))
+      ..close();
+  }
+}
+
+void HandleFindInfo(HttpRequest req) async {
+  try {
+    var sql = await Sql.NewSql();
+    var searchInfo = LostInfoModel(type: 1);
+    var findInfoList = await sql.fliterLostInfo(searchInfo);
+    var transList = <Map<String, dynamic>>[];
+    for (var i = 0; i < findInfoList.length; i++) {
+      transList.add(findInfoList[i].toJson());
+    }
+    req.response
+      ..write(jsonEncode({'data': transList, 'msg': 'success'}))
       ..close();
   } catch (e) {
     req.response
@@ -132,24 +138,6 @@ Future CheckLoginStatus(HttpRequest req) async {
   return true;
 }
 
-void HandleFindInfo(HttpRequest req) async {
-  try {
-    var sql = await Sql.NewSql();
-    var findInfoList = await sql.getFindInfo();
-    var transList = <Map<String, dynamic>>[];
-    for (var i = 0; i < findInfoList.length; i++) {
-      transList.add(findInfoList[i].toJson());
-    }
-    req.response
-      ..write(jsonEncode({'data': transList, 'msg': 'success'}))
-      ..close();
-  } catch (e) {
-    req.response
-      ..write(jsonEncode({'msg': '系统开小差了'}))
-      ..close();
-  }
-}
-
 void handlePOST(HttpRequest req) async {
   var body = await HttpBodyHandler.processRequest(req);
   var result = body.body;
@@ -173,13 +161,13 @@ void handlePOST(HttpRequest req) async {
 }
 
 //搜索推荐信息
-void HandleSearchFindInfo(HttpRequest req) async {
+void HandleSearchInfo(HttpRequest req) async {
   try {
     var sql = await Sql.NewSql();
     var res = {'data': [], 'msg': ''};
     var body = (await HttpBodyHandler.processRequest(req)).body;
     LostInfoModel model = LostInfoModel.fromJson(body);
-    var findInfos = await sql.fliterFindInfo(model);
+    var findInfos = await sql.fliterLostInfo(model);
     var ret = <Map<String, dynamic>>[];
     for (var item in findInfos) {
       ret.add(item.toJson());
@@ -197,9 +185,8 @@ void HandleSearchFindInfo(HttpRequest req) async {
 }
 
 //上传丢失物品信息
-void HandleUploadLostInfo(HttpRequest req) async {
+void HandleUploadInfo(HttpRequest req) async {
   try {
-    var sql = await Sql.NewSql();
     var res = {'data': [], 'msg': ''};
     var body = (await HttpBodyHandler.processRequest(req)).body;
     if (body['picture'] != null) {
@@ -210,12 +197,14 @@ void HandleUploadLostInfo(HttpRequest req) async {
         req.response
           ..write(jsonEncode({'msg': '上传图片出错', 'data': []}))
           ..close();
+        return;
       }
       body['picture'] = imgPath;
     }
 
     var model = LostInfoModel.fromJson(body);
-    var flag = await sql.uploadLostInfo(model);
+    var sql = await Sql.NewSql();
+    var flag = await sql.uploadInfo(model);
     if (flag) {
       res['data'] = '上传成功';
       res['msg'] = 'SUCCESS';

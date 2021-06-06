@@ -47,7 +47,7 @@ void handleRoute(HttpRequest req) async {
   } else if (path == '/img') {
     handler.HandleImg(req);
   } else if (path == '/uploadInfo') {
-    handler.HandleUploadLostInfo(req);
+    handler.HandleUploadInfo(req);
   } else if (path == '/login') {
     handler.HandleLogin(req);
   } else if (path == '/registe') {
@@ -55,7 +55,7 @@ void handleRoute(HttpRequest req) async {
   } else if (path == '/findInfo') {
     handler.HandleFindInfo(req);
   } else if (path == '/searchInfo') {
-    handler.HandleSearchFindInfo(req);
+    handler.HandleSearchInfo(req);
   } else if (path.contains('static')) {
     handler.HandleStatic(req);
   } else if (path == '/lost_and_found') {

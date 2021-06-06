@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import './handler/handler.dart' as handler;
+import './config/config.dart' as config;
 
 void main() async {
   {
     //创建服务器
     // var requestHttpsServer= await HttpServer.bindSecure(myHost, 9002, context)
-    var requestServer = await HttpServer.bind('0.0.0.0', 9002);
+    var requestServer = await HttpServer.bind('0.0.0.0', config.PORT);
     print('http服务启动起来');
     await for (HttpRequest req in requestServer) {
       try {
@@ -31,36 +32,40 @@ void handleRoute(HttpRequest req) async {
       .add('Access-Control-Allow-Headers', 'Content-Type,Access-Token');
   req.response.headers.add('Access-Control-Expose-Headers', '*');
 
-  if (req.method == 'OPTIONS') {
-    req.response
-      ..statusCode = 200
-      ..write('')
-      ..close();
+  try {
+    if (req.method == 'OPTIONS') {
+      req.response
+        ..statusCode = 200
+        ..write('')
+        ..close();
+      return;
+    }
+    if (path == '/') {
+      handler.HandleRoot(req);
+    } else if (path == '/lostInfo') {
+      handler.HandleLostInfo(req);
+    } else if (path == '/developInfo') {
+      handler.HandleDevelopInfo(req);
+    } else if (path == '/img') {
+      handler.HandleImg(req);
+    } else if (path == '/uploadLostInfo') {
+      handler.HandleUploadInfo(req);
+    } else if (path == '/login') {
+      handler.HandleLogin(req);
+    } else if (path == '/registe') {
+      handler.HandleRegiste(req);
+    } else if (path == '/findInfo') {
+      handler.HandleFindInfo(req);
+    } else if (path == '/searchInfo') {
+      handler.HandleSearchInfo(req);
+    } else if (path.contains('static')) {
+      handler.HandleStatic(req);
+    } else if (path == '/lost_and_found') {
+      handler.ServerWebApp(req);
+    } else if (path == '/favicon.ico') {
+      handler.ServerWebApp(req);
+    }
+  } catch (e) {
     return;
-  }
-  if (path == '/') {
-    handler.HandleRoot(req);
-  } else if (path == '/lostInfo') {
-    handler.HandleLostInfo(req);
-  } else if (path == '/developInfo') {
-    handler.HandleDevelopInfo(req);
-  } else if (path == '/img') {
-    handler.HandleImg(req);
-  } else if (path == '/uploadLostInfo') {
-    handler.HandleUploadLostInfo(req);
-  } else if (path == '/login') {
-    handler.HandleLogin(req);
-  } else if (path == '/registe') {
-    handler.HandleRegiste(req);
-  } else if (path == '/findInfo') {
-    handler.HandleFindInfo(req);
-  } else if (path == '/searchInfo') {
-    handler.HandleSearchFindInfo(req);
-  } else if (path.contains('static')) {
-    handler.HandleStatic(req);
-  } else if (path == '/lost_and_found') {
-    handler.ServerWebApp(req);
-  } else if (path == '/favicon.ico') {
-    handler.ServerWebApp(req);
   }
 }
