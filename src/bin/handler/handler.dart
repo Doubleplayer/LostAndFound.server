@@ -44,7 +44,7 @@ void HandleFindInfo(HttpRequest req) async {
     for (var i = 0; i < findInfoList.length; i++) {
       transList.add(findInfoList[i].toJson());
     }
-    safeResponse({'data': transList, 'msg': 'success'}, req);
+    safeResponse({'data': transList, 'msg': 'SUCCESS'}, req);
   } catch (e) {
     safeResponse({'msg': '系统开小差了'}, req);
   }
@@ -77,6 +77,10 @@ void HandleImg(HttpRequest req) {
 //返回首页
 void HandleRoot(HttpRequest req) {
   FileManager.sendHtml(req);
+}
+
+void HandleNotFound(HttpRequest req) {
+  safeResponse({'msg': '找不到页面～～～'}, req);
 }
 
 //登陆

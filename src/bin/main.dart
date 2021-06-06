@@ -41,11 +41,11 @@ void handleRoute(HttpRequest req) async {
       return;
     }
     if (path == '/') {
-      handler.HandleRoot(req);
+      handler.ServerWebApp(req);
     } else if (path == '/lostInfo') {
       handler.HandleLostInfo(req);
     } else if (path == '/developInfo') {
-      handler.HandleDevelopInfo(req);
+      handler.HandleRoot(req);
     } else if (path == '/img') {
       handler.HandleImg(req);
     } else if (path == '/uploadLostInfo') {
@@ -64,6 +64,8 @@ void handleRoute(HttpRequest req) async {
       handler.ServerWebApp(req);
     } else if (path == '/favicon.ico') {
       handler.ServerWebApp(req);
+    } else {
+      handler.HandleNotFound(req);
     }
   } catch (e) {
     return;
