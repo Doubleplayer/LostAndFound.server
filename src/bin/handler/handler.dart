@@ -141,6 +141,7 @@ void HandleSearchInfo(HttpRequest req) async {
       ret.add(item.toJson());
     }
     res['data'] = ret;
+    res['msg'] = 'SUCCESS';
     safeResponse(res, req);
   } catch (e) {
     safeResponse({'msg': e.toString(), 'data': []}, req);

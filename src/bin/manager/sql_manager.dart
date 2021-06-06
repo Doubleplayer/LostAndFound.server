@@ -197,6 +197,7 @@ class Sql {
         print(flag);
         if (flag) {
           filterRes.add(res[i]);
+          break;
         }
       }
     }
