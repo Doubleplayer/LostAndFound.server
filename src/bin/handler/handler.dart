@@ -9,6 +9,16 @@ import '../manager/sql_manager.dart';
 import 'package:src/models/lost_info_model/lost_info_model.dart';
 import 'package:http_server/http_server.dart';
 
+void safeResponse(var msg, HttpRequest req) {
+  try {
+    req.response
+      ..write(jsonEncode(msg))
+      ..close();
+  } catch (e) {
+    return;
+  }
+}
+
 //返回丢失物品信息
 void HandleLostInfo(HttpRequest req) async {
   try {
@@ -19,13 +29,9 @@ void HandleLostInfo(HttpRequest req) async {
     for (var i = 0; i < lostInfoList.length; i++) {
       transList.add(lostInfoList[i].toJson());
     }
-    req.response
-      ..write(jsonEncode({'points': transList, 'msg': 'SUCCESS'}))
-      ..close();
+    safeResponse({'points': transList, 'msg': 'SUCCESS'}, req);
   } catch (e) {
-    req.response
-      ..write(jsonEncode({'msg': '系统开小差了'}))
-      ..close();
+    safeResponse({'msg': '系统开小差了'}, req);
   }
 }
 
@@ -38,13 +44,9 @@ void HandleFindInfo(HttpRequest req) async {
     for (var i = 0; i < findInfoList.length; i++) {
       transList.add(findInfoList[i].toJson());
     }
-    req.response
-      ..write(jsonEncode({'data': transList, 'msg': 'success'}))
-      ..close();
+    safeResponse({'data': transList, 'msg': 'success'}, req);
   } catch (e) {
-    req.response
-      ..write(jsonEncode({'msg': '系统开小差了'}))
-      ..close();
+    safeResponse({'msg': '系统开小差了'}, req);
   }
 }
 
@@ -66,9 +68,7 @@ void HandleDevelopInfo(HttpRequest req) {
 void HandleImg(HttpRequest req) {
   var id = req.uri.queryParameters['action'];
   if (id == null) {
-    req.response
-      ..write(json.encode('缺少id参数'))
-      ..close();
+    safeResponse({'msg': '缺少id参数'}, req);
   } else {
     FileManager.sendImage(req, id);
   }
@@ -100,13 +100,9 @@ void HandleLogin(HttpRequest req) async {
     } else if (checkStatus == -1) {
       res['msg'] = 'NO SUCH USER';
     }
-    req.response
-      ..write(jsonEncode(res))
-      ..close();
+    safeResponse(res, req);
   } catch (e) {
-    req.response
-      ..write(jsonEncode({'ms': '系统开小差了'}))
-      ..close();
+    safeResponse({'msg': '系统开小差了'}, req);
   }
 }
 
@@ -115,18 +111,12 @@ void HandleSendVerify(HttpRequest req) async {
     var body = await HttpBodyHandler.processRequest(req);
     var result = body.body;
     if (await AccountManager.sendVerifyNum(result['email']) == true) {
-      req.response
-        ..write(jsonEncode({'ms': '发送邮件成功'}))
-        ..close();
+      safeResponse({'ms': '发送邮件成功'}, req);
     } else {
-      req.response
-        ..write(jsonEncode({'ms': '发送邮件失败！'}))
-        ..close();
+      safeResponse({'ms': '发送邮件失败！'}, req);
     }
   } catch (e) {
-    req.response
-      ..write(jsonEncode({'ms': '系统开小差了'}))
-      ..close();
+    safeResponse({'ms': '系统开小差了'}, req);
   }
 }
 
@@ -136,28 +126,6 @@ void HandleRegiste(HttpRequest req) async {}
 //验证登陆状态
 Future CheckLoginStatus(HttpRequest req) async {
   return true;
-}
-
-void handlePOST(HttpRequest req) async {
-  var body = await HttpBodyHandler.processRequest(req);
-  var result = body.body;
-  print(result);
-  try {
-    if (result['type'] == 'ORDER') {
-      req.response
-        ..write(jsonEncode('SUCCEED'))
-        ..close();
-    } else {
-      req.response
-        ..statusCode = 404
-        ..write(jsonEncode('FAILED'))
-        ..close();
-    }
-  } catch (e) {
-    req.response
-      ..write(jsonEncode('FAILED'))
-      ..close();
-  }
 }
 
 //搜索推荐信息
@@ -173,14 +141,9 @@ void HandleSearchInfo(HttpRequest req) async {
       ret.add(item.toJson());
     }
     res['data'] = ret;
-    res['msg'] = 'SUCCESS';
-    req.response
-      ..write(jsonEncode(res))
-      ..close();
+    safeResponse(res, req);
   } catch (e) {
-    req.response
-      ..write(jsonEncode({'msg': e.toString(), 'data': []}))
-      ..close();
+    safeResponse({'msg': e.toString(), 'data': []}, req);
   }
 }
 
@@ -194,9 +157,7 @@ void HandleUploadInfo(HttpRequest req) async {
       var imgPath = await FileManager.save_image(
           fileUploaded.filename, fileUploaded.content);
       if (imgPath == 'FAILED') {
-        req.response
-          ..write(jsonEncode({'msg': '上传图片出错', 'data': []}))
-          ..close();
+        safeResponse({'msg': '上传图片出错', 'data': []}, req);
         return;
       }
       body['picture'] = imgPath;
@@ -212,12 +173,9 @@ void HandleUploadInfo(HttpRequest req) async {
       res['data'] = '入库不成功';
       res['msg'] = 'FAILED';
     }
-    req.response
-      ..write(jsonEncode(res))
-      ..close();
+
+    safeResponse(res, req);
   } catch (e) {
-    req.response
-      ..write(jsonEncode({'msg': e.toString(), 'data': []}))
-      ..close();
+    safeResponse({'msg': e.toString(), 'data': []}, req);
   }
 }
