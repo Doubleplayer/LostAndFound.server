@@ -118,7 +118,7 @@ class Sql {
     var timeNow = formatDate(
         DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
     var result = await db.query(
-        'insert into registe_info (email,vnum,last_time) values (?,?,?);',
+        'replace into registe_info (email,vnum,last_time) values (?,?,?);',
         [r.email, r.vnum, timeNow]);
     if (result.affectedRows == 0) {
       return false;
@@ -155,7 +155,7 @@ class Sql {
     var time = formatDate(
         DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
     var result = await db.query(
-        'insert into user (name,password,last_time,token,mail) values (?,?,?,?,?);',
+        'insert into user (name,password,last_time,token,email) values (?,?,?,?,?);',
         [u.name, u.password, time, u.token, u.email]);
     if (result.affectedRows == 0) {
       return false;

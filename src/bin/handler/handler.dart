@@ -190,7 +190,7 @@ void HandleRegiste(HttpRequest req) async {
     if (body['name'] == null ||
         body['password'] == null ||
         body['email'] == null ||
-        body['vnmu'] == null) {
+        body['vnum'] == null) {
       res['msg'] = '请求参数不全';
       safeResponse(res, req);
       return;

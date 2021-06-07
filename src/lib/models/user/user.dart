@@ -17,7 +17,7 @@ class User {
     return User(
       name: json['name'] as String,
       password: json['password'] as String,
-      lastTime: json['last_time'] as String,
+      lastTime: json['last_time'].toString(),
       token: json['token'] as String,
       email: json['email'] as String,
     );
