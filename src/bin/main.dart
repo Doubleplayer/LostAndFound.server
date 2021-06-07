@@ -64,6 +64,8 @@ void handleRoute(HttpRequest req) async {
       handler.ServerWebApp(req);
     } else if (path == '/favicon.ico') {
       handler.ServerWebApp(req);
+    } else if (path == '/registe') {
+      handler.HandleRegiste(req);
     } else {
       handler.HandleNotFound(req);
     }

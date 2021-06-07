@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'package:mysql1/mysql1.dart';
 import 'package:date_format/date_format.dart';
-import 'package:src/models/find_info_model/find_info_model.dart';
+import 'package:src/models/user/user.dart';
 import 'package:src/models/lost_info_model/lost_info_model.dart';
+import 'package:src/models/register_info/register_info.dart';
 import '../config/config.dart' as config;
 
 class Sql {
@@ -25,13 +26,13 @@ class Sql {
   }
 
   List<LostInfoModel> transToLostInfo(List<Row> tmp) {
-    var findInfoList = <Map<String, dynamic>>[];
+    var lostInfoList = <Map<String, dynamic>>[];
     for (int i = 0; i < tmp.length; i++) {
-      findInfoList.add(tmp[i].fields);
+      lostInfoList.add(tmp[i].fields);
     }
     var transList = <LostInfoModel>[];
-    for (var i = 0; i < findInfoList.length; i++) {
-      var strPath = (findInfoList[i]['path'] as Blob).toString();
+    for (var i = 0; i < lostInfoList.length; i++) {
+      var strPath = (lostInfoList[i]['path'] as Blob).toString();
       var listStrPath = strPath.split(','); //坐标的字符串列表
       var listDoublePath = <List<double>>[];
       var point = <double>[];
@@ -42,12 +43,22 @@ class Sql {
           point.clear();
         }
       }
-      findInfoList[i]['path'] = listDoublePath;
-      findInfoList[i]['time'] = formatDate(findInfoList[i]['time'] as DateTime,
+      lostInfoList[i]['path'] = listDoublePath;
+      lostInfoList[i]['time'] = formatDate(lostInfoList[i]['time'] as DateTime,
           [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
-      transList.add(LostInfoModel.fromJson(findInfoList[i]));
+      transList.add(LostInfoModel.fromJson(lostInfoList[i]));
     }
     return transList;
+  }
+
+  User transToUser(Row tmp) {
+    var fileds = tmp.fields;
+    return User.fromJson(fileds);
+  }
+
+  RegisterInfo transToRegisterInfo(Row tmp) {
+    var fileds = tmp.fields;
+    return RegisterInfo.fromJson(fileds);
   }
 
   static Future<Sql> NewSql() async {
@@ -88,6 +99,64 @@ class Sql {
     var result = await db.query(
         'Update user set token = ?, last_time = ? where name =?;',
         [token, timeNow, name]);
+    if (result.affectedRows == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<RegisterInfo> getRegisteInfoByMail(String email) async {
+    var result =
+        await db.query('select * from registe_info where email= ?;', [email]);
+    var list = result.toList();
+    if (list.isEmpty) return null;
+    return transToRegisterInfo(list[0]);
+  }
+
+  Future<bool> saveRegisteInfo(RegisterInfo r) async {
+    var timeNow = formatDate(
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+    var result = await db.query(
+        'insert into registe_info (email,vnum,last_time) values (?,?,?);',
+        [r.email, r.vnum, timeNow]);
+    if (result.affectedRows == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<bool> deleteRegisteInfoByEmail(String email) async {
+    var result =
+        await db.query('DELETE FROM  registe_info where email = ?;', [email]);
+    if (result.affectedRows == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<User> getUserByEmail(String email) async {
+    var result = await db.query('select * from user where email= ?;', [email]);
+    var list = result.toList();
+    if (list.isEmpty) return null;
+    return transToUser(list[0]);
+  }
+
+  Future<User> getUserByName(String name) async {
+    var result = await db.query('select * from user where name= ?;', [name]);
+    var list = result.toList();
+    if (list.isEmpty) return null;
+    return transToUser(list[0]);
+  }
+
+  Future<bool> saveUser(User u) async {
+    var time = formatDate(
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+    var result = await db.query(
+        'insert into user (name,password,last_time,token,mail) values (?,?,?,?,?);',
+        [u.name, u.password, time, u.token, u.email]);
     if (result.affectedRows == 0) {
       return false;
     } else {
