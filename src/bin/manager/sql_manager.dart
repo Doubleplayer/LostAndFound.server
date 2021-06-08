@@ -44,7 +44,7 @@ class Sql {
       }
       findInfoList[i]['path'] = listDoublePath;
       findInfoList[i]['time'] = formatDate(findInfoList[i]['time'] as DateTime,
-          [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+          [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
       transList.add(LostInfoModel.fromJson(findInfoList[i]));
     }
     return transList;
@@ -84,7 +84,7 @@ class Sql {
 
   Future<bool> setToken(String token, String name) async {
     var timeNow = formatDate(
-        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
     var result = await db.query(
         'Update user set token = ?, last_time = ? where name =?;',
         [token, timeNow, name]);

@@ -1,0 +1,1 @@
+dart2native src/bin/main.dart -o src/production/my_app

@@ -6,14 +6,16 @@ import 'dart:math';
 
 class AccountManager {
   static Future<bool> sendVerifyNum(String targetMai) async {
-    var username = '2564300726@qq.com';
-    var password = 'xhoahtzkhfrpdiae';
-
-    final smtpServer = qq(username, password);
+    // var username = '2564300726@qq.com';
+    // var password = 'xhoahtzkhfrpdiae';
+    var username = 'lsh1125195347@163.com';
+    var password = 'SAWNSWCPUSEDHZAN';
+    final smtpServer =
+        SmtpServer('smtp.163.com', username: username, password: password);
 
     // Create our message.
     var timeNow = formatDate(
-        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
     final message = Message()
       ..from = Address(username, 'LostAndFound')
       ..recipients.add(targetMai)
@@ -80,5 +82,5 @@ class AccountManager {
 }
 
 main(List<String> args) async {
-  await AccountManager.sendVerifyNum('2823665238@qq.com');
+  await AccountManager.sendVerifyNum('1125195347@qq.com');
 }
