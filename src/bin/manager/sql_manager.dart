@@ -207,6 +207,30 @@ class Sql {
         div <= config.minDiv;
   }
 
+  bool isInPolygon(List<double> p, List<List<double>> poly) {
+    var x = p[0];
+    var y = p[1];
+    int i, j = poly.length - 1;
+    var oddNodes = false;
+
+    for (i = 0; i < poly.length; i++) {
+      if ((poly[i][1] < y && poly[j][1] >= y ||
+              poly[j][1] < y && poly[i][1] >= y) &&
+          (poly[i][0] <= x || poly[j][0] <= x)) {
+        if (poly[i][0] +
+                (y - poly[i][1]) /
+                    (poly[j][1] - poly[i][1]) *
+                    (poly[j][0] - poly[i][0]) <
+            x) {
+          oddNodes = !oddNodes;
+        }
+      }
+      j = i;
+    }
+
+    return oddNodes;
+  }
+
   //筛选LostInfo
   Future<List<LostInfoModel>> fliterLostInfo(
       FilterLostInfoModel lostInfo) async {
@@ -263,12 +287,17 @@ class Sql {
     }
     var filterRes = <LostInfoModel>[];
     for (var i = 0; i < res.length; i++) {
-      var old = lostInfo.path[0];
-      for (var item in lostInfo.path) {
-        var flag =
-            nearByLine([res[i].path[0][0], res[i].path[0][1]], old, item);
-        print(flag);
-        if (flag) {
+      // for (var item in lostInfo.path) {
+      //   var flag =
+      //       nearByLine([res[i].path[0][0], res[i].path[0][1]], old, item);
+      //   print(flag);
+      //   if (flag) {
+      //     filterRes.add(res[i]);
+      //     break;
+      //   }
+      // }
+      for (var p in res[i].path) {
+        if (isInPolygon(p, lostInfo.path)) {
           filterRes.add(res[i]);
           break;
         }

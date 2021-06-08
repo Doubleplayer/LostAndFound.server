@@ -63,6 +63,12 @@
                 "type":1,
                 "if_find":0
                 }</p>
+                <p>
+                    response:{
+                    "msg":"msg":"SUCCESS/FAILD/WRONG PASSWORD/NO SUCH USER",
+                    "data":[lost_info对象]
+                    }
+                </p>
         </li>
        
         <li><a href="http://landx.top:9002/uploadLostInfo">/uploadLostInfo</a>
@@ -78,6 +84,25 @@
                 "type":1,
                 "id":15
             }</p>
+            <p>
+                response:{
+                "msg":"SUCCESS/FAILED",
+                "data":"入库成功/入库不成功等"
+                }
+            </p>
+        </li>
+
+        <li><a href="http://landx.top:9002/sendVerify">/sendVerify</a>
+            <p>POST，发送邮箱验证码</p>
+            <p>json:</p>
+            <p>{
+                "email":邮件地址
+            }</p>
+            <p>
+                response:{
+                    "msg":"SUCCESS/FAILED/邮箱不正确等",
+                    }
+            </p>
         </li>
 
 

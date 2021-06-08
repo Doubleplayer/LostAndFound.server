@@ -115,15 +115,15 @@ void HandleSendVerify(HttpRequest req) async {
     var body = await HttpBodyHandler.processRequest(req);
     var result = body.body;
     if (result['email'].toString().isEmpty) {
-      safeResponse({'ms': '请传入正确的邮箱'}, req);
+      safeResponse({'msg': '请传入正确的邮箱'}, req);
     }
     if (await AccountManager.sendVerifyNum(result['email']) == true) {
-      safeResponse({'ms': '发送邮件成功'}, req);
+      safeResponse({'msg': 'SUCCESS'}, req);
     } else {
-      safeResponse({'ms': '发送邮件失败！'}, req);
+      safeResponse({'msg': '发送邮件失败！'}, req);
     }
   } catch (e) {
-    safeResponse({'ms': '系统开小差了'}, req);
+    safeResponse({'msg': '系统开小差了'}, req);
   }
 }
 
@@ -162,7 +162,7 @@ void HandleUploadInfo(HttpRequest req) async {
       var imgPath = await FileManager.save_image(
           fileUploaded.filename, fileUploaded.content);
       if (imgPath == 'FAILED') {
-        safeResponse({'msg': '上传图片出错', 'data': []}, req);
+        safeResponse({'msg': 'FAILED', 'data': '上传图片出错'}, req);
         return;
       }
       body['picture'] = imgPath;
@@ -181,7 +181,7 @@ void HandleUploadInfo(HttpRequest req) async {
 
     safeResponse(res, req);
   } catch (e) {
-    safeResponse({'msg': e.toString(), 'data': []}, req);
+    safeResponse({'msg': 'FAILED', 'data': e.toString()}, req);
   }
 }
 
