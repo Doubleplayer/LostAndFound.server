@@ -50,7 +50,7 @@ class AccountManager {
       return false;
     }
     var now = formatDate(
-        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
     await sql.saveRegisteInfo(
         RegisterInfo(email: targetMail, vnum: vnum, lastTime: now));
     return true;

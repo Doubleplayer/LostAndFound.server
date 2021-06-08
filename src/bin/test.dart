@@ -14,7 +14,7 @@ class AccountManager {
 
     // Create our message.
     var timeNow = formatDate(
-        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
     final message = Message()
       ..from = Address(username, 'LostAndFound')
       ..recipients.add(targetMai)

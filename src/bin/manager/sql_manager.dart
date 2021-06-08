@@ -116,7 +116,7 @@ class Sql {
 
   Future<bool> saveRegisteInfo(RegisterInfo r) async {
     var timeNow = formatDate(
-        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
     var result = await db.query(
         'replace into registe_info (email,vnum,last_time) values (?,?,?);',
         [r.email, r.vnum, timeNow]);
@@ -153,7 +153,7 @@ class Sql {
 
   Future<bool> saveUser(User u) async {
     var time = formatDate(
-        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', HH, ':', nn, ':', ss]);
     var result = await db.query(
         'insert into user (name,password,last_time,token,email) values (?,?,?,?,?);',
         [u.name, u.password, time, u.token, u.email]);
