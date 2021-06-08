@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:src/models/filter_lost_info_model/filter_lost_info_model.dart';
+
 import '../manager/FileManager.dart';
 import '../manager/account_manager.dart';
 import '../manager/sql_manager.dart';
@@ -21,7 +23,7 @@ void safeResponse(var msg, HttpRequest req) {
 void HandleLostInfo(HttpRequest req) async {
   try {
     var sql = await Sql.NewSql();
-    var searchInfo = LostInfoModel(type: 0);
+    var searchInfo = FilterLostInfoModel(type: 0);
     var lostInfoList = await sql.fliterLostInfo(searchInfo);
     var transList = <Map<String, dynamic>>[];
     for (var i = 0; i < lostInfoList.length; i++) {
@@ -36,7 +38,7 @@ void HandleLostInfo(HttpRequest req) async {
 void HandleFindInfo(HttpRequest req) async {
   try {
     var sql = await Sql.NewSql();
-    var searchInfo = LostInfoModel(type: 1);
+    var searchInfo = FilterLostInfoModel(type: 1);
     var findInfoList = await sql.fliterLostInfo(searchInfo);
     var transList = <Map<String, dynamic>>[];
     for (var i = 0; i < findInfoList.length; i++) {
@@ -136,7 +138,7 @@ void HandleSearchInfo(HttpRequest req) async {
     var sql = await Sql.NewSql();
     var res = {'data': [], 'msg': ''};
     var body = (await HttpBodyHandler.processRequest(req)).body;
-    LostInfoModel model = LostInfoModel.fromJson(body);
+    var model = FilterLostInfoModel.fromJson(body);
     var findInfos = await sql.fliterLostInfo(model);
     var ret = <Map<String, dynamic>>[];
     for (var item in findInfos) {

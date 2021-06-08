@@ -4,18 +4,19 @@ import 'package:date_format/date_format.dart';
 import 'package:src/models/user/user.dart';
 import 'package:src/models/lost_info_model/lost_info_model.dart';
 import 'package:src/models/register_info/register_info.dart';
+import 'package:src/models/filter_lost_info_model/filter_lost_info_model.dart';
 import '../config/config.dart' as config;
 
 class Sql {
   MySqlConnection db;
   ConnectionSettings settings;
   Sql({this.settings}) {
-    if (this.settings == null) {
+    if (settings == null) {
       var host = 'landx.top';
       if (config.env == config.LOCAL) {
         host = 'localhost';
       }
-      this.settings = ConnectionSettings(
+      settings = ConnectionSettings(
         host: host,
         port: 3306,
         user: 'lsh',
@@ -170,7 +171,7 @@ class Sql {
         (await db.query('select password from user where name = ?;', [name]))
             .toList();
     var res = '';
-    if (tmp.length <= 0) {
+    if (tmp.isEmpty) {
       res = 'NO';
     } else {
       res = tmp[0].fields['password'];
@@ -206,8 +207,9 @@ class Sql {
         div <= config.minDiv;
   }
 
-  //通过LostInfo筛选FindInfo
-  Future<List<LostInfoModel>> fliterLostInfo(LostInfoModel lostInfo) async {
+  //筛选LostInfo
+  Future<List<LostInfoModel>> fliterLostInfo(
+      FilterLostInfoModel lostInfo) async {
     var filterStr = <String>[];
     var filterParms = <Object>[];
 
@@ -220,9 +222,11 @@ class Sql {
       filterStr.add('category = ?');
       filterParms.add(lostInfo.category);
     }
-    if (lostInfo.time != null && lostInfo.time != '') {
-      filterStr.add('time >= ?');
-      filterParms.add(lostInfo.time);
+
+    {
+      filterStr.add('time between ? and ?');
+      filterParms.add(lostInfo.startTime);
+      filterParms.add(lostInfo.endTime);
     }
 
     if (lostInfo.ifFind != null) {
