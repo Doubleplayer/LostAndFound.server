@@ -1,17 +1,20 @@
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:date_format/date_format.dart';
+import 'package:src/models/register_info/register_info.dart';
+import 'package:src/models/user/user.dart';
 import 'sql_manager.dart';
 import 'dart:math';
 
 class AccountManager {
-  static Future<bool> sendVerifyNum(String targetMai) async {
-    // var username = '2564300726@qq.com';
-    // var password = 'xhoahtzkhfrpdiae';
-    var username = 'lsh1125195347@163.com';
-    var password = 'SAWNSWCPUSEDHZAN';
-    final smtpServer =
-        SmtpServer('smtp.163.com', username: username, password: password);
+  static Future<bool> sendMessage(String targetMai, String info) async {
+    if (targetMai.isEmpty) {
+      return false;
+    }
+    var username = '2564300726@qq.com';
+    var password = 'xhoahtzkhfrpdiae';
+
+    final smtpServer = qq(username, password);
 
     // Create our message.
     var timeNow = formatDate(
@@ -19,9 +22,8 @@ class AccountManager {
     final message = Message()
       ..from = Address(username, 'LostAndFound')
       ..recipients.add(targetMai)
-      ..subject = '欢迎注册北大LostAndFound失物招领系统😀'
-      ..html =
-          '<h1>注册验证码</h1>\n<p>Hey! 您的注册验证码为${createRandomVerifyNum(6)}，有效时间为5分钟</p><p>$timeNow</p>';
+      ..subject = 'LostAndFound失物招领系统😀'
+      ..html = '<h1>来自系统的信息</h1>\n<p>$info</p><p>$timeNow</p>';
     try {
       final sendReport = await send(message, smtpServer);
       print('Message sent: ' + sendReport.toString());
@@ -37,6 +39,25 @@ class AccountManager {
       }
       return false;
     }
+  }
+
+  static Future<bool> sendVerifyNum(String targetMail) async {
+    var sql = await Sql.NewSql();
+    var vnum = createRandomVerifyNum(6);
+    var message = 'Hey! 您的注册验证码为${vnum}，有效时间为5分钟';
+    var if_send = await sendMessage(targetMail, message);
+    if (!if_send) {
+      return false;
+    }
+    var now = formatDate(
+        DateTime.now(), [yyyy, '-', mm, '-', dd, ' ', hh, ':', nn, ':', ss]);
+    await sql.saveRegisteInfo(
+        RegisterInfo(email: targetMail, vnum: vnum, lastTime: now));
+    return true;
+  }
+
+  static String createToken() {
+    return createRandomNum(25);
   }
 
   ///生成随机字符串
@@ -78,6 +99,53 @@ class AccountManager {
     } else {
       return 0;
     }
+  }
+
+//保存用户信息
+  static Future<Map<String, String>> saveUser(
+      String name, String email, String password, String vnum) async {
+    var sql = await Sql.NewSql();
+
+    if ((await sql.getUserByName(name)) != null) {
+      return {'msg': '用户名已被注册'};
+    }
+    if ((await sql.getUserByEmail(email)) != null) {
+      return {'msg': '邮箱已被注册'};
+    }
+    var registInfo = await sql.getRegisteInfoByMail(email);
+    if (registInfo == null || registInfo.vnum != vnum) {
+      return {'msg': '验证码错误'};
+    }
+    var last = DateTime.parse(registInfo.lastTime);
+    if (DateTime.now().difference(last).inMinutes >= 5) {
+      return {'msg': '验证码过期'};
+    }
+    var token = createToken();
+    var u = User(
+        token: createToken(), email: email, name: name, password: password);
+    if (!(await sql.saveUser(u))) {
+      return {'msg': '系统开小差了'};
+    }
+    if (!(await sql.deleteRegisteInfoByEmail(email))) {
+      return {'msg': '系统开小差了'};
+    }
+    return {'msg': 'SUCESS', 'token': token};
+  }
+
+  static Future<bool> existEmail(String email) async {
+    var sql = await Sql.NewSql();
+    if ((await sql.getUserByEmail(email)) != null) {
+      return true;
+    }
+    return false;
+  }
+
+  static Future<bool> existUserName(String name) async {
+    var sql = await Sql.NewSql();
+    if ((await sql.getUserByEmail(name)) != null) {
+      return true;
+    }
+    return false;
   }
 }
 

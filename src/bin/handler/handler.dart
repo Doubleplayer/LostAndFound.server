@@ -4,6 +4,7 @@ import '../manager/FileManager.dart';
 import '../manager/account_manager.dart';
 import '../manager/sql_manager.dart';
 import 'package:src/models/lost_info_model/lost_info_model.dart';
+import 'package:src/models/user/user.dart';
 import 'package:http_server/http_server.dart';
 
 void safeResponse(var msg, HttpRequest req) {
@@ -89,7 +90,7 @@ void HandleLogin(HttpRequest req) async {
     var checkStatus =
         await AccountManager.checkPassword(body['name'], body['password']);
     if (checkStatus == 1) {
-      var token = AccountManager.createRandomNum(25);
+      var token = AccountManager.createToken();
       if (await sql.setToken(token, body['name'])) {
         res['msg'] = 'SUCCESS';
         res['token'] = token;
@@ -111,6 +112,9 @@ void HandleSendVerify(HttpRequest req) async {
   try {
     var body = await HttpBodyHandler.processRequest(req);
     var result = body.body;
+    if (result['email'].toString().isEmpty) {
+      safeResponse({'ms': '请传入正确的邮箱'}, req);
+    }
     if (await AccountManager.sendVerifyNum(result['email']) == true) {
       safeResponse({'ms': '发送邮件成功'}, req);
     } else {
@@ -120,9 +124,6 @@ void HandleSendVerify(HttpRequest req) async {
     safeResponse({'ms': '系统开小差了'}, req);
   }
 }
-
-//注册
-void HandleRegiste(HttpRequest req) async {}
 
 //验证登陆状态
 Future CheckLoginStatus(HttpRequest req) async {
@@ -179,5 +180,25 @@ void HandleUploadInfo(HttpRequest req) async {
     safeResponse(res, req);
   } catch (e) {
     safeResponse({'msg': e.toString(), 'data': []}, req);
+  }
+}
+
+void HandleRegiste(HttpRequest req) async {
+  try {
+    var res = {'token': '', 'msg': ''};
+    var body = (await HttpBodyHandler.processRequest(req)).body;
+    if (body['name'] == null ||
+        body['password'] == null ||
+        body['email'] == null ||
+        body['vnum'] == null) {
+      res['msg'] = '请求参数不全';
+      safeResponse(res, req);
+      return;
+    }
+    var resp = await AccountManager.saveUser(
+        body['name'], body['email'], body['password'], body['vnum']);
+    safeResponse(resp, req);
+  } catch (e) {
+    safeResponse({'msg': e.toString(), 'token': ''}, req);
   }
 }

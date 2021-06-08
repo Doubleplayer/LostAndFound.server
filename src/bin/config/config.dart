@@ -3,5 +3,5 @@ var lon_prefix = 0.000170;
 var minDiv = 0.00018;
 const LOCAL = 'local';
 const REMOTE = 'remote';
-var env = LOCAL;
+var env = REMOTE;
 var PORT = 9002;
