@@ -1206,3 +1206,25 @@ SocketException: Failed to create server socket (OS Error: Address already in us
 <asynchronous suspension>
 http服务启动起来
 /root/server/LostAndFound.server/src/bin/../image/23301141058365226329.png
+2021/06/09 15:12:42 [1;34m[I] [root.go:108] frps uses config file: /root/server/frp/frp_0.35.1_linux_amd64/frps.ini[0m
+Create server listener error, listen tcp 0.0.0.0:8000: bind: address already in use
+Unhandled exception:
+SocketException: Failed to create server socket (OS Error: Address already in use, errno = 98), address = 0.0.0.0, port = 10086
+#0      _NativeSocket.bind (dart:io-patch/socket_patch.dart:957:7)
+<asynchronous suspension>
+#1      main (file:///root/server/get_up_early_server-master/bin/main.dart:14:25)
+<asynchronous suspension>
+http服务启动起来
+/root/server/LostAndFound.server/src/bin/../image/23457150736587689509.png
+/root/server/LostAndFound.server/src/bin/../image/23951759340484401126.png
+/root/server/LostAndFound.server/src/bin/../image/23839512268886832580.png
+/root/server/LostAndFound.server/src/bin/../image/23981017949149264080.png
+2021/06/09 15:26:00 [1;34m[I] [root.go:108] frps uses config file: /root/server/frp/frp_0.35.1_linux_amd64/frps.ini[0m
+Create server listener error, listen tcp 0.0.0.0:8000: bind: address already in use
+Unhandled exception:
+SocketException: Failed to create server socket (OS Error: Address already in use, errno = 98), address = 0.0.0.0, port = 10086
+#0      _NativeSocket.bind (dart:io-patch/socket_patch.dart:957:7)
+<asynchronous suspension>
+#1      main (file:///root/server/get_up_early_server-master/bin/main.dart:14:25)
+<asynchronous suspension>
+http服务启动起来
