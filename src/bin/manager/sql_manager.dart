@@ -380,4 +380,11 @@ class Sql {
     if (res.affectedRows == 0) return false;
     return true;
   }
+
+  Future<bool> updateIfFind(int id, int if_find, String solver) async {
+    var res = await db.query(
+        'Update lost_info set if_find = ? , solver = ?  where id=?;',
+        [if_find, solver, id]);
+    return res.affectedRows > 0;
+  }
 }

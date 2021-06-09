@@ -10,20 +10,21 @@ class LostInfoModel {
   String contactInfo;
   String picture;
   int type;
+  String solver;
 
-  LostInfoModel({
-    this.id,
-    this.name,
-    this.discrip,
-    this.category,
-    this.path,
-    this.time,
-    this.ifFind,
-    this.userName,
-    this.contactInfo,
-    this.picture,
-    this.type,
-  });
+  LostInfoModel(
+      {this.id,
+      this.name,
+      this.discrip,
+      this.category,
+      this.path,
+      this.time,
+      this.ifFind,
+      this.userName,
+      this.contactInfo,
+      this.picture,
+      this.type,
+      this.solver});
 
   factory LostInfoModel.fromJson(Map<String, dynamic> json) {
     var list = <List<double>>[];
@@ -74,18 +75,18 @@ class LostInfoModel {
       }
     }
     return LostInfoModel(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      discrip: json['discrip'] as String,
-      category: json['category'] as String,
-      path: list,
-      time: json['time'] as String,
-      ifFind: json['if_find'] as int,
-      userName: json['user_name'] as String,
-      contactInfo: json['contact_info'] as String,
-      picture: json['picture'] as String,
-      type: json['type'] as int,
-    );
+        id: json['id'] as int,
+        name: json['name'] as String,
+        discrip: json['discrip'] as String,
+        category: json['category'] as String,
+        path: list,
+        time: json['time'] as String,
+        ifFind: json['if_find'] as int,
+        userName: json['user_name'] as String,
+        contactInfo: json['contact_info'] as String,
+        picture: json['picture'] as String,
+        type: json['type'] as int,
+        solver: json['solver'].toString());
   }
 
   Map<String, dynamic> toJson() {
@@ -101,6 +102,7 @@ class LostInfoModel {
       'contact_info': contactInfo,
       'picture': picture,
       'type': type,
+      'solver': solver
     };
   }
 }

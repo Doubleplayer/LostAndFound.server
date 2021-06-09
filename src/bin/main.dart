@@ -68,6 +68,8 @@ void handleRoute(HttpRequest req) async {
       handler.HandleRegiste(req);
     } else if (path == '/sendVerify') {
       handler.HandleSendVerify(req);
+    } else if (path == '/updateIfFind') {
+      handler.HandleUpdateIfFind(req);
     } else {
       handler.HandleNotFound(req);
     }

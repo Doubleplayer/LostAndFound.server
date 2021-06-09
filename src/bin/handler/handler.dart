@@ -31,6 +31,7 @@ void HandleLostInfo(HttpRequest req) async {
     }
     safeResponse({'points': transList, 'msg': 'SUCCESS'}, req);
   } catch (e) {
+    print(e);
     safeResponse({'msg': '系统开小差了'}, req);
   }
 }
@@ -46,6 +47,7 @@ void HandleFindInfo(HttpRequest req) async {
     }
     safeResponse({'data': transList, 'msg': 'SUCCESS'}, req);
   } catch (e) {
+    print(e);
     safeResponse({'msg': '系统开小差了'}, req);
   }
 }
@@ -106,6 +108,7 @@ void HandleLogin(HttpRequest req) async {
     }
     safeResponse(res, req);
   } catch (e) {
+    print(e);
     safeResponse({'msg': '系统开小差了'}, req);
   }
 }
@@ -123,6 +126,7 @@ void HandleSendVerify(HttpRequest req) async {
       safeResponse({'msg': '发送邮件失败！'}, req);
     }
   } catch (e) {
+    print(e);
     safeResponse({'msg': '系统开小差了'}, req);
   }
 }
@@ -148,6 +152,7 @@ void HandleSearchInfo(HttpRequest req) async {
     res['msg'] = 'SUCCESS';
     safeResponse(res, req);
   } catch (e) {
+    print(e);
     safeResponse({'msg': e.toString(), 'data': []}, req);
   }
 }
@@ -181,6 +186,7 @@ void HandleUploadInfo(HttpRequest req) async {
 
     safeResponse(res, req);
   } catch (e) {
+    print(e);
     safeResponse({'msg': 'FAILED', 'data': e.toString()}, req);
   }
 }
@@ -201,6 +207,33 @@ void HandleRegiste(HttpRequest req) async {
         body['name'], body['email'], body['password'], body['vnum']);
     safeResponse(resp, req);
   } catch (e) {
+    print(e);
     safeResponse({'msg': e.toString(), 'token': ''}, req);
+  }
+}
+
+void HandleUpdateIfFind(HttpRequest req) async {
+  try {
+    var res = {'msg': ''};
+    var body = (await HttpBodyHandler.processRequest(req)).body;
+    if (body['solver'] == null ||
+        body['id'] == null ||
+        body['if_find'] == null) {
+      res['msg'] = '请求参数不全';
+      safeResponse(res, req);
+      return;
+    }
+    var sql = await Sql.NewSql();
+    var flag =
+        await sql.updateIfFind(body['id'], body['if_find'], body['solver']);
+    if (flag == true) {
+      res['msg'] = 'SUCCESS';
+    } else {
+      res['msg'] = 'FAILED';
+    }
+    safeResponse(res, req);
+  } catch (e) {
+    print(e);
+    safeResponse({'msg': e.toString()}, req);
   }
 }
