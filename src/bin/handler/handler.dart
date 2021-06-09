@@ -38,7 +38,7 @@ void HandleLostInfo(HttpRequest req) async {
 void HandleFindInfo(HttpRequest req) async {
   try {
     var sql = await Sql.NewSql();
-    var searchInfo = FilterLostInfoModel.fromJson({'type': 0});
+    var searchInfo = FilterLostInfoModel.fromJson({'type': 1});
     var findInfoList = await sql.fliterLostInfo(searchInfo);
     var transList = <Map<String, dynamic>>[];
     for (var i = 0; i < findInfoList.length; i++) {
