@@ -1232,3 +1232,27 @@ http服务启动起来
 /root/server/LostAndFound.server/src/bin/../image/25923513761338858840.png
 /root/server/LostAndFound.server/src/bin/../image/27251211366266017905.png
 http服务启动起来
+http服务启动起来
+Message sent: Message successfully sent.
+Connection was opened at: 2021-06-10 13:17:03.770273.
+Sending the message started at: 2021-06-10 13:17:04.198027 and finished at: 2021-06-10 13:17:04.983497.
+Message sent: Message successfully sent.
+Connection was opened at: 2021-06-10 14:24:34.248983.
+Sending the message started at: 2021-06-10 14:24:34.616113 and finished at: 2021-06-10 14:24:35.245368.
+Message sent: Message successfully sent.
+Connection was opened at: 2021-06-10 14:25:20.179048.
+Sending the message started at: 2021-06-10 14:25:20.570446 and finished at: 2021-06-10 14:25:21.218186.
+Error 1267 (HY000): Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8mb4_general_ci,COERCIBLE) for operation '='
+Error 1267 (HY000): Illegal mix of collations (latin1_swedish_ci,IMPLICIT) and (utf8mb4_general_ci,COERCIBLE) for operation '='
+Message sent: Message successfully sent.
+Connection was opened at: 2021-06-10 14:28:23.633038.
+Sending the message started at: 2021-06-10 14:28:23.991574 and finished at: 2021-06-10 14:28:24.669541.
+Message sent: Message successfully sent.
+Connection was opened at: 2021-06-10 15:24:59.772729.
+Sending the message started at: 2021-06-10 15:25:00.167981 and finished at: 2021-06-10 15:25:00.886478.
+Message sent: Message successfully sent.
+Connection was opened at: 2021-06-10 15:28:11.831926.
+Sending the message started at: 2021-06-10 15:28:12.184451 and finished at: 2021-06-10 15:28:12.816891.
+type 'String' is not a subtype of type 'HttpBodyFileUpload'
+type 'String' is not a subtype of type 'HttpBodyFileUpload'
+type 'String' is not a subtype of type 'HttpBodyFileUpload'

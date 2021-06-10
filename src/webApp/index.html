@@ -105,7 +105,38 @@
             </p>
         </li>
 
+        <li><a href="http://landx.top:9002/updateIfFind">/updateIfFind</a>
+            <p>POST，发送邮箱验证码</p>
+            <p>json:</p>
+            <p>{
+                "if_find":邮件地址,
+                "solver":解决者id,
+                "id":解决的lostInfo id
+            }</p>
+            <p>
+                response:{
+                    "msg":"SUCCESS/FAILED",
+                    }
+            </p>
+        </li>
 
+        <li><a href="http://landx.top:9002/registe">/registe</a>
+            <p>POST，注册</p>
+            <p>json:</p>
+            <p>{
+                "email":"1255118770@qq.com",
+                "name":"咕咕咕咕",
+                "password":"gugugugu",
+                "vnum":"760628"#验证码
+            }</p>
+            <p>
+                response:{
+                    "msg":"SUCCESS/验证码错误/邮箱已被注册/用户名已被注册",
+                    }
+            </p>
+        </li>
+
+        
     </ul>
 
 </body>

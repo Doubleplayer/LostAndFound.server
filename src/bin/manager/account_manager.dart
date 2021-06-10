@@ -129,7 +129,7 @@ class AccountManager {
     if (!(await sql.deleteRegisteInfoByEmail(email))) {
       return {'msg': '系统开小差了'};
     }
-    return {'msg': 'SUCESS', 'token': token};
+    return {'msg': 'SUCCESS', 'token': token};
   }
 
   static Future<bool> existEmail(String email) async {
