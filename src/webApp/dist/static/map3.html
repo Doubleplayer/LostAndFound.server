@@ -54,7 +54,7 @@
         line-height: 28px;
       }
     </style>
-    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=E4805d16520de693a3fe707cdc962045"></script>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=buwFCL0Cd3HQMonTgBmrGYsxwwuO130d"></script>
     <!--加载鼠标绘制工具-->
     <script type="text/javascript" src="//api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js">
     </script>
@@ -72,21 +72,33 @@
     </div>
     <div id="result">
       <input type="button" value="清除绘制图形" onclick="clearAll()" />
+
     </div>
     <script type="text/javascript">
       // 百度地图API功能
       var map = new BMap.Map("map", {
         maxZoom: 19,
         minZoom: 16,
-        poiIcon: false
+        enableMapClick:false,
       });
       var poi = new BMap.Point(116.316702, 39.998516);
       map.centerAndZoom(poi, 17);
       map.enableScrollWheelZoom();
-      // var overlays = [];
-      // var overlaycomplete = function(e) {
-      //   overlays.push(e.overlay);
-      // };
+      var overlays = [];
+      var res=[];
+      var overlaycomplete = function(e) {
+        clearAll();
+        overlays.push(e.overlay);
+        var tmp=[];
+        tmp.push(e.overlay.point.lng);
+        tmp.push(e.overlay.point.lat);
+        res.push(tmp);
+        console.log(tmp);
+        window.parent.postMessage({
+          cmd:'returnData',
+          params:{res}
+        })
+      };
       var styleOptions = {
         strokeColor: "red", //边线颜色。
         fillColor: "red", //填充颜色。当参数为空时，圆形将没有填充效果。
@@ -102,7 +114,7 @@
         drawingToolOptions: {
           anchor: BMAP_ANCHOR_TOP_RIGHT, //位置
           offset: new BMap.Size(5, 5), //偏离值
-          drawingModes: [BMAP_DRAWING_POLYGON, BMAP_DRAWING_RECTANGLE]
+          drawingModes: [BMAP_DRAWING_MARKER]
         },
         polygonOptions: styleOptions, //多边形的样式
         rectangleOptions: styleOptions //矩形的样式
@@ -111,12 +123,17 @@
       drawingManager.addEventListener('overlaycomplete', overlaycomplete);
 
       function clearAll() {
-        // for (var i = 0; i < overlays.length; i++) {
-        //   map.removeOverlay(overlays[i]);
-
-        // }
-        // overlays.length = 0
+        for (var i = 0; i < overlays.length; i++) {
+          map.removeOverlay(overlays[i]);
+        }
+        overlays.length = 0;
+        res=[];
+        window.parent.postMessage({
+          cmd:'returnData',
+          params:{res}
+        })
       }
+
     </script>
   </body>
 </html>
